@@ -1,11 +1,13 @@
 package gui;
 
+import model.World;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
 
-    private final static int CELLSIZE = 50;
+    private final static int CELLSIZE = 100;
 
     private final static Color backgroundColor = Color.BLACK;
     private final static Color foregroundColor = Color.GREEN;
@@ -29,18 +31,27 @@ public class GamePanel extends JPanel {
         leftRightMargin = ((width % CELLSIZE) + CELLSIZE) / 2;
         topBottomMargin = ((height % CELLSIZE) + CELLSIZE) / 2;
 
+        int rows = (height - (2*topBottomMargin))/CELLSIZE;
+        int columns = (width - (2*leftRightMargin))/CELLSIZE;
+        System.out.printf("rows %d and cols %d", rows, columns);
+
+        World world = new World(rows, columns);
+        world.setCell(0, 0, true);
+        world.setCell(2, 1, true);
+
         g2.setColor(backgroundColor);
         g2.fillRect(0, 0, width, height);
 
-        g2.setColor(backgroundColor);
-        g2.fillRect(leftRightMargin, topBottomMargin, width - (2 * leftRightMargin), height - (2 * topBottomMargin));
+//        g2.setColor(backgroundColor);
+//        g2.fillRect(leftRightMargin, topBottomMargin, width - (2 * leftRightMargin), height - (2 * topBottomMargin));
 
         drawGrid(g2, width, height);
-        fillCell(g2, 5, 5, true);
-        fillCell(g2, 5, 5, false);
-        fillCell(g2, 4, 4, true);
-        fillCell(g2, 3, 4, true);
-        fillCell(g2, 0, 0, true);
+        for(int col = 0; col < columns; col++){
+            for(int row = 0; row < rows; row++){
+                boolean status = world.getCells(row, col);
+                fillCell(g2, row, col, status);
+            }
+        }
     }
 
     private void drawGrid(Graphics2D g2, int width, int height) {

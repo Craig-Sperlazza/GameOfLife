@@ -4,6 +4,8 @@ import model.World;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class GamePanel extends JPanel {
 
@@ -15,9 +17,24 @@ public class GamePanel extends JPanel {
 
     private int topBottomMargin;
     private int leftRightMargin;
+    private World world;
 
 
     public GamePanel() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = (e.getY() - topBottomMargin)/CELLSIZE;
+                int col = (e.getX() - leftRightMargin)/CELLSIZE;
+
+                if(row>= world.getRows() || col>=world.getColumns()){
+                    return;
+                }
+                boolean status = world.getCell(row, col);
+                world.setCell(row, col, !status);
+                repaint();
+            }
+        });
     }
 
     //note that swing calls this internally and checks for events. We do not call it anywhere
@@ -33,22 +50,20 @@ public class GamePanel extends JPanel {
 
         int rows = (height - (2*topBottomMargin))/CELLSIZE;
         int columns = (width - (2*leftRightMargin))/CELLSIZE;
-        System.out.printf("rows %d and cols %d", rows, columns);
+        //System.out.printf("rows %d and cols %d", rows, columns);
 
-        World world = new World(rows, columns);
-        world.setCell(0, 0, true);
-        world.setCell(2, 1, true);
+
+        if(world == null){
+            world = new World(rows, columns);
+        }
 
         g2.setColor(backgroundColor);
         g2.fillRect(0, 0, width, height);
 
-//        g2.setColor(backgroundColor);
-//        g2.fillRect(leftRightMargin, topBottomMargin, width - (2 * leftRightMargin), height - (2 * topBottomMargin));
-
         drawGrid(g2, width, height);
         for(int col = 0; col < columns; col++){
             for(int row = 0; row < rows; row++){
-                boolean status = world.getCells(row, col);
+                boolean status = world.getCell(row, col);
                 fillCell(g2, row, col, status);
             }
         }

@@ -37,6 +37,7 @@ public class GamePanel extends JPanel {
         });
     }
 
+
     //note that swing calls this internally and checks for events. We do not call it anywhere
     @Override
     protected void paintComponent(Graphics g) {
@@ -85,5 +86,10 @@ public class GamePanel extends JPanel {
         int x = leftRightMargin + (col * CELLSIZE);
         int y = topBottomMargin + (row * CELLSIZE);
         g2.fillRect(x + 1, y + 1, CELLSIZE - 2, CELLSIZE - 2);
+    }
+
+    public void randomize() {
+        world.randomize();
+        repaint();
     }
 }
